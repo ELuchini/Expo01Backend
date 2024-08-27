@@ -1,5 +1,5 @@
 import mysql from 'mysql2';
-import dotenv from 'dotenv';
+import dotenv from 'dotenv';//Its for the db configuration. Use an external file ignored by git. 
 dotenv.config();
 
 const pool = mysql
@@ -24,7 +24,7 @@ export async function getTodosByID(id) {
   return rows;
 }
 
-export async function getTodo(id) {
+export async function getTodo(id) {//not uses yet on the app. Disabled import on app because that. 
   const [rows] = await pool.query(`SELECT * FROM todos WHERE id = ?`, [id]);
   return rows[0];
 }

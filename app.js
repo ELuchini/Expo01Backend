@@ -2,7 +2,7 @@ import express from "express";
 // TO RUN: YARN DEV
 
 import {
-  getTodo,
+  // getTodo,
   shareTodo,
   deleteTodo,
   getTodosByID,
