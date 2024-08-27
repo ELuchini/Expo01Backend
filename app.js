@@ -20,6 +20,10 @@ const corsOptions = {
   methods: ["POST", "GET", "PUT", "DELETE"], // specify the allowed methods
   // credentials: true, // allow sending credentials (cookies, authentication)
 };
+//****************************************
+//HAY QUE CONFIGURAR EL COTEJAMIENTO/CODIFICACIÓN DE CARACTERES DE LA TABLA A UN FORMATO QUE SOPORTE UNICODE COMO UTF8MB4
+//PARA EL FUNCIONAMIENTO/ALMACENAMIENTO DE EMOJIS.
+//****************************************
 
 
 // const developers = [
