@@ -59,6 +59,7 @@ export async function createTodo(user_id, title) {
     [user_id, title]
   );
   const todoID = result.insertId;
+  console.log(`Tarea: ${title}, creada con exito.`);
   return getTodo(todoID);
 }
 
@@ -69,20 +70,42 @@ export async function deleteTodo(id) {
     `,
     [id]
   );
+  console.log(`Taréa Id: ${id} eliminada.`);
   return result;
 }
 
-export async function toggleCompleted(id, value) {
-  const newValue = value === true ? "TRUE" : "FALSE";
-  // console.log("value: " + value);
-  // console.log("togleCompleted: " + newValue);
+  export async function toggleCompleted(id, value) {
+    const newValue = value === true ? "TRUE" : "FALSE";
+    console.log("value: " + value);
+    // console.log("togleCompleted: " + newValue);
+    const [result] = await pool.query(
+      `
+      UPDATE todos
+      SET completed = ${newValue} 
+      WHERE id = ?;
+      `,
+      [id]
+    );
+    return result;
+  }
+
+  //Agrego 23-10-24 para modificar un todo.
+  export async function updateTodo(id, title, completed, user_id, shared_with_id ) {
+  const newValueCompleted = completed === true ? "TRUE" : "FALSE";
+  console.log("Data to update: ");
+  console.log(" id: " + id);
+  console.log(" user_id: " + user_id);
+  console.log(" title: " + title);
+  console.log(" completed: " + completed);
+  console.log(" shared_with_id: " + shared_with_id);
+
   const [result] = await pool.query(
     `
     UPDATE todos
-    SET completed = ${newValue} 
+    SET title = ?, completed = ${newValueCompleted} 
     WHERE id = ?;
     `,
-    [id]
+    [title, id]
   );
   return result;
 }

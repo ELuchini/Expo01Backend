@@ -1,5 +1,6 @@
 import express from "express";
 // TO RUN: YARN DEV
+import morgan from "morgan";
 
 import {
   // getTodo,
@@ -11,12 +12,13 @@ import {
   getUserByEmail,
   getUserByID,
   getSharedTodoByID,
+  updateTodo,
 } from "./database.js";
 import bodyParser from "body-parser";
 import cors from "cors";
 
 const corsOptions = {
-  origin: ["http://127.0.0.1:8081", "http://192.168.1.2:8080", "http://192.168.1.2:8081", "http://localhost:8081", "http://192.168.1.7" ], // specify the allowed origin
+  origin: ["http://127.0.0.1:8081", "http://192.168.1.2:8080", "http://192.168.1.2:8081", "http://localhost:8081", "http://192.168.1.7", "http://142.251.133.78", "http://190.230.76.207"], // specify the allowed origin
   methods: ["POST", "GET", "PUT", "DELETE"], // specify the allowed methods
   // credentials: true, // allow sending credentials (cookies, authentication)
 };
@@ -44,9 +46,10 @@ const corsOptions = {
 const app = express();
 app.use(bodyParser.json());
 app.use(express.json());
-// app.use(cors());
-app.use(cors(corsOptions));
+//app.use(cors());//Cors estaría desactivado, sin filtrado.
+app.use(cors(corsOptions));//Usa cors, con filtrado... 
 // app.use(ckeckApiKey);
+app.use(morgan('common'));
 
 
 app.get("/todos/:id", async (req, res) => {
@@ -66,11 +69,29 @@ app.get("/users/:id", async (req, res) => {
   res.status(200).send(user);
 });
 
-app.put("/todos/:id", async (req, res) => {
+/* app.put("/todos/:id", async (req, res) => {
   const { value } = req.body;
   // console.log("Body: "+ JSON.stringify(req.body));
   const todo = await toggleCompleted(req.params.id, value);
   res.status(200).send(todo);
+}); */
+//modifico 22/10/24 para modificar el title del todo, o el valor de completed, alternativamente. 
+
+app.put("/todos/:id", async (req, res) => {
+  const { value, id, title, completed, user_id, shared_with_id } = req.body;
+  console.log("Body: "+ JSON.stringify(req.body));
+  console.log("Value: "+ 
+    (value===undefined?
+      "Si, es indefinido":
+      "No, no es indefinido."
+    ));
+  if(value!=undefined){
+    const todo = await toggleCompleted(req.params.id, value);
+    res.status(200).send(todo);
+  } else if (user_id>-1){
+    const todo = await updateTodo(req.params.id, title, completed, user_id, shared_with_id);
+    res.status(200).send(todo);
+  }
 });
 
 app.delete("/todos/:id", async (req, res) => {
